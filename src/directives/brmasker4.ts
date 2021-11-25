@@ -3,12 +3,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
 export class BrMaskModel {
-  mask: string;
-  len: number;
-  person: boolean;
-  phone: boolean;
-  money: boolean;
-  percent: boolean;
+  mask!: string;
+  len!: number;
+  person!: boolean;
+  phone!: boolean;
+  money!: boolean;
+  percent!: boolean;
   type: 'alfa' | 'num' | 'all' = 'alfa';
   decimal: number = 2;
 }
