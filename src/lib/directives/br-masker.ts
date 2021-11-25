@@ -1,17 +1,7 @@
 import {Directive, Input, HostListener, OnInit, ElementRef, Renderer2, Injectable} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import ConfigMaskModel from "./config-mask.model";
 
-
-export class BrMaskModel {
-    mask: string | undefined;
-    len: number | undefined;
-    person: boolean | undefined;
-    phone: boolean | undefined;
-    money: boolean | undefined;
-    percent: boolean | undefined;
-    type: 'alfa' | 'num' | 'all' = 'alfa';
-    decimal: number = 2;
-}
 
 @Directive({
     selector: '[brmasker]',
@@ -23,7 +13,7 @@ export class BrMaskModel {
 })
 @Injectable()
 export class BrMaskerDirective implements OnInit, ControlValueAccessor {
-    @Input() brmasker: BrMaskModel = new BrMaskModel();
+    @Input() configMaskModel: ConfigMaskModel = new ConfigMaskModel();
 
     @HostListener('keyup', ['$event'])
     inputKeyup(event: any): void {
@@ -47,16 +37,17 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
 
     }
 
-    constructor(private _renderer: Renderer2, private _elementRef: ElementRef) {
-    }
+    constructor(
+      private _renderer: Renderer2,
+      private _elementRef: ElementRef) {}
 
     ngOnInit(): void {
-        if (!this.brmasker.type) {
-            this.brmasker.type = 'all';
+        if (!this.configMaskModel.type) {
+            this.configMaskModel.type = 'all';
         }
 
-        if (!this.brmasker.decimal) {
-            this.brmasker.decimal = 2;
+        if (!this.configMaskModel.decimal) {
+            this.configMaskModel.decimal = 2;
         }
     }
 
@@ -80,7 +71,7 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
         }
     }
 
-    writeCreateValue(value: string, config: BrMaskModel = new BrMaskModel()): any {
+    writeCreateValue(value: string, config: ConfigMaskModel = new ConfigMaskModel()): any {
         if (value && config.phone) {
             return value.replace(/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/gi, '$1 ($2) $3-$4');
         }
@@ -96,9 +87,9 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
         }
 
         if (value && config.mask) {
-            this.brmasker.mask = config.mask;
+            this.configMaskModel.mask = config.mask;
             if (config.len) {
-                this.brmasker.len = config.len;
+                this.configMaskModel.len = config.len;
             }
             return this.onInput(value);
         }
@@ -119,7 +110,7 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
         }
     }
 
-    writeValueMoney(value: string, config: BrMaskModel = new BrMaskModel()): string {
+    writeValueMoney(value: string, config: ConfigMaskModel = new ConfigMaskModel()): string {
         value.replace(/\D/gi, '');
         let replace = "([0-9]{" + config.decimal + "})$";
         let re = new RegExp(replace, "g");
@@ -128,28 +119,28 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
 
 
     returnValue(value: string): any {
-        if (!this.brmasker.mask) {
-            this.brmasker.mask = '';
+        if (!this.configMaskModel.mask) {
+            this.configMaskModel.mask = '';
         }
         if (value) {
             let v = value;
-            if (this.brmasker.type == 'alfa') {
+            if (this.configMaskModel.type == 'alfa') {
                 v = v.replace(/\d/gi, '');
             }
-            if (this.brmasker.type == 'num') {
+            if (this.configMaskModel.type == 'num') {
                 v = v.replace(/\D/gi, '');
             }
 
-            if (this.brmasker.money) {
+            if (this.configMaskModel.money) {
                 return this.moneyMask(this.onInput(v));
             }
-            if (this.brmasker.phone) {
+            if (this.configMaskModel.phone) {
                 return this.phoneMask(v);
             }
-            if (this.brmasker.person) {
+            if (this.configMaskModel.person) {
                 return this.peapollMask(v);
             }
-            if (this.brmasker.percent) {
+            if (this.configMaskModel.percent) {
                 return this.percentMask(v)
             }
             return this.onInput(v);
@@ -169,15 +160,15 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
     private phoneMask(v: any): void {
         let n = v;
         if (n.length > 14) {
-            this.brmasker.len = 15;
-            this.brmasker.mask = '(99) 99999-9999';
+            this.configMaskModel.len = 15;
+            this.configMaskModel.mask = '(99) 99999-9999';
             n = n.replace(/\D/gi, '');
             n = n.replace(/(\d{2})(\d)/gi, '$1 $2');
             n = n.replace(/(\d{5})(\d)/gi, '$1-$2');
             n = n.replace(/(\d{4})(\d)/gi, '$1$2');
         } else {
-            this.brmasker.len = 14;
-            this.brmasker.mask = '(99) 9999-9999';
+            this.configMaskModel.len = 14;
+            this.configMaskModel.mask = '(99) 9999-9999';
             n = n.replace(/\D/gi, '');
             n = n.replace(/(\d{2})(\d)/gi, '$1 $2');
             n = n.replace(/(\d{4})(\d)/gi, '$1-$2');
@@ -190,16 +181,16 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
         let n = v;
         n = n.replace(/\D/gi, '');
         if (n.length >= 14) {
-            this.brmasker.len = 18;
-            this.brmasker.mask = '99.999.999/9999-99';
+            this.configMaskModel.len = 18;
+            this.configMaskModel.mask = '99.999.999/9999-99';
             n = n.replace(/(\d{2})(\d)/gi, '$1.$2');
             n = n.replace(/(\d{3})(\d)/gi, '$1.$2');
             n = n.replace(/(\d{3})(\d)/gi, '$1/$2');
             n = n.replace(/(\d{4})(\d{1,4})$/gi, '$1-$2');
             n = n.replace(/(\d{2})(\d{1,2})$/gi, '$1$2');
         } else {
-            this.brmasker.len = 14;
-            this.brmasker.mask = '999.999.999-99';
+            this.configMaskModel.len = 14;
+            this.configMaskModel.mask = '999.999.999-99';
             n = n.replace(/(\d{3})(\d)/gi, '$1.$2');
             n = n.replace(/(\d{3})(\d)/gi, '$1.$2');
             n = n.replace(/(\d{3})(\d{1,2})$/gi, '$1-$2');
@@ -210,17 +201,17 @@ export class BrMaskerDirective implements OnInit, ControlValueAccessor {
     private moneyMask(v: any): string {
         let tmp = v;
         tmp = tmp.replace(/\D/gi, '');
-        let replace = "([0-9]{" + this.brmasker.decimal + "})$";
+        let replace = "([0-9]{" + this.configMaskModel.decimal + "})$";
         let re = new RegExp(replace, "g");
         tmp = tmp.replace(re, ',$1');
         return tmp;
     }
 
-    private onInput(value: any): void {
-        return this.formatField(value, this.brmasker.mask, this.brmasker.len);
+    private onInput(value: any): any {
+        return BrMaskerDirective.formatField(value, this.configMaskModel.mask, this.configMaskModel.len);
     }
 
-    private formatField(campo: string, Mascara: string | undefined, tamanho: number | undefined): any {
+    private static formatField(campo: string, Mascara: string | undefined, tamanho: number | undefined): any {
         if (!tamanho) {
             tamanho = 99999999999;
         }

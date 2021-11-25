@@ -1,6 +1,41 @@
 {
   "name": "angular-br-mask",
   "version": "0.0.1",
+  "description": "Mask for Angular from BrMask4",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jozecarlos/brmasker4.git"
+  },
+  "keywords": [
+    "mask for angular 4, mask",
+    "mascara data",
+    "mascara cpf",
+    "mascara cnpj",
+    "mascara telefone",
+    "mascara celular",
+    "mascara cep",
+    "mascara real",
+    "mascara dolar",
+    "mask data",
+    "mask cpf",
+    "mask cnpj",
+    "mask telefone",
+    "mask celular",
+    "mask cep",
+    "mask real",
+    "mask dolar",
+    "mask angular 2",
+    "input angular 2",
+    "angular 2"
+  ],
+  "author": "José Carlos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jozecarlos/brmasker4.git/issues"
+  },
+  "homepage": "https://github.com/jozecarlos/brmasker4.git/issues#readme",
   "peerDependencies": {
     "@angular/common": "^13.0.0",
     "@angular/core": "^13.0.0"
